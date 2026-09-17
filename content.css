@@ -1,0 +1,45 @@
+[data-pf-state='gone'] { display: none !important; }
+[data-pf-state='closing'] { overflow: hidden !important; opacity: 0 !important; transition: height 0.25s ease, opacity 0.2s ease !important; }
+[data-pf-host] { position: relative !important; }
+
+/* Overlay mode: the post keeps its full size, so the feed does not move. */
+[data-pf-state='veil'] > *:not(.pf-overlay),
+[data-pf-state='veil-cells'] > td > *:not(.pf-overlay) {
+    filter: blur(9px) saturate(0.4) !important;
+    opacity: 0.4 !important;
+    pointer-events: none !important;
+    user-select: none !important;
+    transition: filter 0.25s ease, opacity 0.25s ease !important;
+    will-change: filter, opacity;
+}
+[data-pf-state='reveal'] > *,
+[data-pf-state='reveal'] > td > * {
+    transition: filter 0.3s ease, opacity 0.3s ease !important;
+}
+
+.pf-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    display: flex;
+    align-items: flex-start;
+    align-content: flex-start;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 22px 12px 0;
+    cursor: pointer;
+    font: 600 12px/1 system-ui, sans-serif;
+    animation: pf-in 0.25s both;
+}
+[data-pf-state='veil-cells'] .pf-overlay { justify-content: flex-start; align-items: center; align-content: center; padding: 0; }
+
+.pf-badge {
+    position: absolute;
+    top: 4px;
+    right: 48px;
+    z-index: 4;
+    pointer-events: none;
+}
+
+@keyframes pf-in { from { opacity: 0; } to { opacity: 1; } }

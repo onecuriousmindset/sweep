@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="ui.css">
+<style>
+  body { width: 400px; padding: 16px 16px 14px; }
+  header { display: flex; align-items: center; gap: 10px; }
+  header img { width: 34px; height: 34px; border-radius: 10px; }
+  header h1 { font-size: 19px; font-weight: 700; flex: 1; line-height: 1; }
+  header h1 small { display: block; font: 500 11.5px/1 var(--body); letter-spacing: 0; color: var(--muted); margin-top: 5px; }
+
+  #setup { margin-top: 14px; padding: 14px; }
+  #setup h2 { font-size: 16px; margin-bottom: 4px; }
+  #setup p { margin: 0 0 10px; font-size: 12.5px; color: var(--muted); }
+  #setup .row { display: flex; gap: 8px; }
+  #setup .note { margin-top: 10px; }
+
+  #problem { margin-top: 12px; }
+
+  #rules { display: flex; flex-direction: column; gap: 6px; }
+  .rule { display: flex; align-items: center; gap: 6px; padding: 5px; }
+  .rule:focus-within { border-color: var(--tangerine); }
+  .kind { flex: none; min-width: 78px; height: 28px; border: 0; border-radius: 9px; padding: 0 10px; font: 700 11.5px/1 var(--body); cursor: pointer; background: var(--tangerine-soft); color: light-dark(#b8410f, #ff9a6b); transition: transform 0.12s; }
+  .kind:active { transform: scale(0.95); }
+  .kind[data-kind=only] { background: var(--leaf-soft); color: light-dark(#1d6b47, #7fdcae); }
+  .rule input { flex: 1; min-width: 0; border: 0; outline: 0; background: none; color: inherit; font: 500 13.5px var(--body); padding: 4px 2px; text-overflow: ellipsis; }
+  .rule input::placeholder { color: var(--muted); font-weight: 400; }
+  .scope { flex: none; height: 22px; padding: 0 8px; border: 0; border-radius: 999px; background: var(--sunk); color: var(--muted); font: 600 10.5px/1 var(--body); cursor: pointer; transition: transform 0.12s, color 0.12s; }
+  .scope:hover { color: var(--ink); }
+  .scope:active { transform: scale(0.95); }
+  .scope:not([data-scope=all]) { color: var(--ink); box-shadow: 0 0 0 1px var(--line) inset; }
+  .scope.thinking { opacity: 0.5; pointer-events: none; }
+  .rule .del { flex: none; width: 26px; height: 26px; border: 0; border-radius: 8px; background: none; color: var(--muted); cursor: pointer; font-size: 16px; line-height: 1; }
+  .rule .del:hover { background: var(--sunk); color: var(--ink); }
+  .empty { color: var(--muted); font-size: 12.5px; padding: 10px 12px; border: 1px dashed var(--line); border-radius: var(--radius); }
+
+  .adder { margin-top: 6px; border-style: dashed; background: none; }
+  .adder:focus-within { border-style: solid; background: var(--card); }
+  .adder .go { flex: none; height: 28px; padding: 0 12px; border: 0; border-radius: 9px; background: var(--tangerine); color: #fff; font: 700 12px/1 var(--body); cursor: pointer; transition: transform 0.12s; }
+  .adder .go:active { transform: scale(0.95); }
+  .adder .go[disabled] { display: none; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .chips button { border: 1px solid var(--line); background: var(--card); color: var(--ink); border-radius: 999px; padding: 4px 11px; font: 500 12px var(--body); cursor: pointer; transition: transform 0.12s, border-color 0.12s; }
+  .chips button:hover { border-color: var(--tangerine); transform: translateY(-1px); }
+  .chips button[data-kind=only]:hover { border-color: var(--leaf); }
+  .chips button[disabled] { display: none; }
+
+  .seg { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .seg label { padding: 10px 12px; cursor: pointer; transition: border-color 0.12s, box-shadow 0.12s; }
+  .seg label:has(input:checked) { border-color: var(--tangerine); box-shadow: 0 0 0 1px var(--tangerine) inset; }
+  .seg input { position: absolute; opacity: 0; }
+  .seg b { display: block; font: 700 13.5px var(--display); }
+  .seg small { color: var(--muted); font-size: 11.5px; line-height: 1.3; display: block; margin-top: 1px; }
+
+  .slider { display: flex; align-items: center; gap: 10px; color: var(--muted); font-size: 12px; font-weight: 500; }
+  input[type=range] { flex: 1; accent-color: var(--tangerine); }
+
+  footer { margin-top: 16px; padding: 10px 12px; background: var(--sunk); border-radius: var(--radius); display: flex; align-items: center; gap: 10px; font-size: 12.5px; }
+  footer b { font: 700 15px var(--display); }
+  footer .grow { flex: 1; }
+  footer a { font-size: 12px; }
+
+  details { margin-top: 12px; font-size: 12.5px; }
+  details summary { cursor: pointer; color: var(--muted); font-weight: 600; list-style: none; }
+  details summary::before { content: '＋ '; }
+  details[open] summary::before { content: '－ '; }
+  .adv { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--line); }
+  .adv:last-child { border: 0; }
+  .adv small { display: block; color: var(--muted); font-size: 11.5px; }
+  .adv input[type=number] { width: 84px; height: 30px; }
+  #saved { font-size: 11.5px; font-weight: 600; color: var(--leaf); opacity: 0; transition: opacity 0.2s; }
+  #saved.on { opacity: 1; }
+</style>
+</head>
+<body>
+<header>
+  <img src="icons/icon-128.png" alt="">
+  <h1>Sweep<small id="tagline">Sweep your feed, in plain words.</small></h1>
+  <span id="saved">Saved</span>
+  <label class="switch" title="Turn the filter on or off"><input type="checkbox" id="enabled"><span></span></label>
+</header>
+
+<section id="setup" class="card rise" hidden>
+  <h2>One step to start</h2>
+  <p>Sweep uses your own TypeSafe key. The key stays in this browser. <a href="https://docs.typesafe.ai/introduction/quickstart" target="_blank" rel="noopener">Get a key</a></p>
+  <div class="row">
+    <input class="field" id="apiKey" type="password" placeholder="Paste your API key" autocomplete="off" spellcheck="false">
+    <button class="btn" id="saveKey">Save</button>
+  </div>
+  <div class="note bad" id="keyError" hidden></div>
+</section>
+
+<div class="note bad" id="problem" hidden></div>
+
+<main id="main">
+  <div class="label">Rules <span id="ruleCount"></span></div>
+  <div id="rules"></div>
+  <div class="rule card adder" id="adder">
+    <button class="kind" id="addKind" data-kind="hide" title='Click to change between "Hide" and "Show only"'>Hide</button>
+    <input id="add" placeholder="posts that…" maxlength="300" aria-label="New rule">
+    <button class="go" id="addGo" title="Add this rule (Enter)" disabled>Add</button>
+  </div>
+  <div class="chips" id="presets"></div>
+
+  <div class="label">When a post fails a rule</div>
+  <div class="seg">
+    <label class="card"><input type="radio" name="mode" value="overlay"><b>Blur it</b><small>It stays in place, with the reason on top.</small></label>
+    <label class="card"><input type="radio" name="mode" value="remove"><b>Remove it</b><small>It leaves the feed with no trace.</small></label>
+  </div>
+
+  <div class="label">How strict <span id="strictText"></span></div>
+  <div class="slider"><span>Gentle</span><input type="range" id="strict" min="0.05" max="0.9" step="0.05"><span>Strict</span></div>
+
+  <footer>
+    <div><b id="statHidden">0</b> hidden today</div>
+    <div class="muted"><span id="statChecked">0</span> checked</div>
+    <span class="grow"></span>
+    <div class="muted" id="statCost" title="An estimate from the input tokens of today"></div>
+  </footer>
+
+  <details>
+    <summary>More settings</summary>
+    <div class="adv"><div>Show the scores<small>A small label on each post. Good to tune a rule.</small></div><label class="switch"><input type="checkbox" id="showScores"><span></span></label></div>
+    <div class="adv"><div>Daily limit<small>The most posts sent to Jev in one day.</small></div><input class="field" type="number" id="dailyLimit" min="100" max="100000" step="100"></div>
+    <div class="adv"><div>API key<small id="keyHint"></small></div><button class="btn ghost small" id="changeKey">Change</button></div>
+    <div class="adv"><div>Help<small>What the extension sends, and where.</small></div><a href="welcome.html" target="_blank">Open the guide</a></div>
+  </details>
+</main>
+<script src="defaults.js"></script>
+<script src="popup.js"></script>
+</body>
+</html>

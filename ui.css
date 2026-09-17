@@ -1,0 +1,62 @@
+/* Theme "Tangerine Calm": warm paper, soft ink, one loud tangerine. */
+@font-face { font-family: 'Bricolage Grotesque'; src: url('fonts/BricolageGrotesque.woff2') format('woff2'); font-weight: 200 800; font-display: swap; }
+@font-face { font-family: 'Figtree'; src: url('fonts/Figtree.woff2') format('woff2'); font-weight: 300 900; font-display: swap; }
+
+:root {
+    color-scheme: light dark;
+    --paper: light-dark(#fff8ef, #171412);
+    --card: light-dark(#ffffff, #211d1a);
+    --sunk: light-dark(#f9eee0, #1d1916);
+    --ink: light-dark(#1f1a17, #f7efe6);
+    --muted: light-dark(#8a7f76, #9c9187);
+    --line: light-dark(#eadfd2, #342e29);
+    --tangerine: #ff6b2c;
+    --tangerine-soft: light-dark(#ffe6d8, #3a2217);
+    --leaf: #2f9e6b;
+    --leaf-soft: light-dark(#dcf3e7, #16301f);
+    --danger: light-dark(#c2371f, #ff8a70);
+    --display: 'Bricolage Grotesque', ui-rounded, system-ui, sans-serif;
+    --body: 'Figtree', system-ui, sans-serif;
+    --radius: 14px;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--paper); color: var(--ink); font: 400 13.5px/1.5 var(--body); -webkit-font-smoothing: antialiased; }
+h1, h2, h3 { font-family: var(--display); letter-spacing: -0.02em; margin: 0; }
+a { color: var(--tangerine); text-decoration: none; font-weight: 600; }
+a:hover { text-decoration: underline; }
+.muted { color: var(--muted); }
+
+.label { font: 600 11px/1 var(--body); letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted); margin: 18px 2px 8px; display: flex; justify-content: space-between; align-items: baseline; }
+.label span { text-transform: none; letter-spacing: 0; font-weight: 500; }
+
+.card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); }
+
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 36px; padding: 0 16px; border: 0; border-radius: 999px; background: var(--tangerine); color: #fff; font: 700 13px/1 var(--body); cursor: pointer; transition: transform 0.12s, filter 0.12s; }
+.btn:hover { filter: brightness(1.06); }
+.btn:active { transform: scale(0.97); }
+.btn[disabled] { opacity: 0.5; cursor: default; }
+.btn.ghost { background: none; color: var(--muted); border: 1px solid var(--line); font-weight: 600; }
+.btn.ghost:hover { color: var(--ink); border-color: var(--muted); filter: none; }
+.btn.small { height: 28px; padding: 0 12px; font-size: 12px; }
+
+.field { width: 100%; height: 38px; padding: 0 12px; border: 1px solid var(--line); border-radius: 11px; background: var(--card); color: var(--ink); font: 500 13.5px var(--body); outline: 0; transition: border-color 0.12s, box-shadow 0.12s; }
+.field:focus { border-color: var(--tangerine); box-shadow: 0 0 0 3px var(--tangerine-soft); }
+.field::placeholder { color: var(--muted); font-weight: 400; }
+
+.switch { position: relative; width: 40px; height: 24px; flex: none; display: inline-block; }
+.switch input { position: absolute; inset: 0; opacity: 0; margin: 0; cursor: pointer; z-index: 1; }
+.switch span { position: absolute; inset: 0; border-radius: 999px; background: var(--line); transition: background 0.18s; }
+.switch span::after { content: ''; position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px #0003; transition: transform 0.18s cubic-bezier(0.3, 1.4, 0.6, 1); }
+.switch input:checked + span { background: var(--tangerine); }
+.switch input:checked + span::after { transform: translateX(16px); }
+.switch input:focus-visible + span { box-shadow: 0 0 0 3px var(--tangerine-soft); }
+
+.note { display: flex; gap: 8px; padding: 10px 12px; border-radius: 11px; font-size: 12.5px; line-height: 1.4; }
+.note.bad { background: light-dark(#fde8e3, #3a1a14); color: var(--danger); }
+.note.good { background: var(--leaf-soft); color: light-dark(#1d6b47, #7fdcae); }
+[hidden] { display: none !important; }
+
+@keyframes rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.rise { animation: rise 0.35s both cubic-bezier(0.2, 0.8, 0.2, 1); }
+@media (prefers-reduced-motion: reduce) { .rise { animation: none; } * { transition: none !important; } }

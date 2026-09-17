@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sweep</title>
+<link rel="icon" href="icons/icon-32.png">
+<link rel="stylesheet" href="ui.css">
+<style>
+  body { min-height: 100vh; background:
+      radial-gradient(60rem 30rem at 85% -10%, var(--tangerine-soft), transparent 60%),
+      radial-gradient(40rem 24rem at -10% 110%, var(--leaf-soft), transparent 60%), var(--paper); }
+  .page { max-width: 1040px; margin: 0 auto; padding: 56px 28px 80px; display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 56px; align-items: start; }
+  @media (max-width: 860px) { .page { grid-template-columns: 1fr; gap: 32px; padding-top: 32px; } }
+
+  .brand { display: flex; align-items: center; gap: 12px; font: 700 18px var(--display); }
+  .brand img { width: 44px; height: 44px; border-radius: 13px; box-shadow: 0 6px 20px #ff6b2c40; }
+  h1 { font-size: clamp(38px, 5.2vw, 60px); line-height: 0.98; font-weight: 800; margin: 36px 0 16px; }
+  h1 em { font-style: normal; color: var(--tangerine); }
+  .lede { font-size: 17px; line-height: 1.55; color: var(--muted); max-width: 30em; margin: 0 0 28px; }
+
+  .demo { display: flex; flex-direction: column; gap: 8px; max-width: 440px; }
+  .post { padding: 12px 14px; font-size: 13.5px; position: relative; overflow: hidden; }
+  .post b { display: block; font-size: 12.5px; margin-bottom: 2px; }
+  .post.veiled > *:not(.tag) { filter: blur(6px); opacity: 0.45; }
+  .tag { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; gap: 6px; font: 600 12px var(--body); }
+  .tag span { background: #fff4e6; color: #1f1a17; border-radius: 999px; padding: 5px 11px; box-shadow: 0 2px 10px #0002; display: inline-flex; gap: 6px; align-items: center; }
+  .tag span::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--tangerine); }
+  .tag span i { font-style: normal; opacity: 0.55; }
+
+  .steps { display: flex; flex-direction: column; gap: 14px; }
+  .step { padding: 20px; }
+  .step h2 { font-size: 18px; display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+  .step h2 .n { flex: none; width: 26px; height: 26px; border-radius: 50%; background: var(--tangerine); color: #fff; font: 700 13px var(--body); display: grid; place-items: center; }
+  .step.done h2 .n { background: var(--leaf); }
+  .step p { margin: 0 0 12px; color: var(--muted); }
+  .row { display: flex; gap: 8px; }
+  .note { margin-top: 10px; }
+  .sites { display: flex; flex-wrap: wrap; gap: 6px; }
+  .sites a { background: var(--sunk); color: var(--ink); border-radius: 999px; padding: 6px 13px; font-size: 13px; }
+  .sites a:hover { background: var(--tangerine); color: #fff; text-decoration: none; }
+  ul.plain { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; color: var(--muted); }
+  ul.plain li { padding-left: 22px; position: relative; }
+  ul.plain li::before { content: ''; position: absolute; left: 4px; top: 8px; width: 8px; height: 8px; border-radius: 50%; background: var(--leaf); }
+  ul.plain b { color: var(--ink); font-weight: 600; }
+</style>
+</head>
+<body>
+<div class="page">
+  <div>
+    <div class="brand rise"><img src="icons/icon-128.png" alt="">Sweep</div>
+    <h1 class="rise" style="animation-delay:.05s">Sweep your feed <em>clean</em>. In plain words.</h1>
+    <p class="lede rise" style="animation-delay:.1s">Write a rule such as “AI replies” or “posts that brag”. Sweep reads each post and sweeps away the ones that fail. You see the reason on each one, and one click shows the post again.</p>
+
+    <div class="demo rise" style="animation-delay:.18s">
+      <div class="post card"><b>Mara</b><span>We moved our queue from Redis to Postgres. Here are the three problems we did not expect.</span></div>
+      <div class="post card veiled"><b>growth_guru</b><span>Great insights! This really resonates. Thanks for sharing your valuable perspective on this topic!</span><div class="tag"><span>AI reply <i>94%</i></span></div></div>
+      <div class="post card veiled"><b>to_the_moon</b><span>Last chance. This token goes 100x this week. Link in bio.</span><div class="tag"><span>Crypto <i>98%</i></span></div></div>
+      <div class="post card"><b>Deniz</b><span>I tested 4 standing desks for a year. The cheap one won.</span></div>
+    </div>
+  </div>
+
+  <div class="steps">
+    <section class="step card rise" id="stepKey" style="animation-delay:.12s">
+      <h2><span class="n">1</span>Add your TypeSafe key</h2>
+      <p>Sweep has no server and no account. It uses your own key for the Jev model. <a href="https://docs.typesafe.ai/introduction/quickstart" target="_blank" rel="noopener">Get a key</a></p>
+      <div class="row">
+        <input class="field" id="apiKey" type="password" placeholder="Paste your API key" autocomplete="off" spellcheck="false">
+        <button class="btn" id="saveKey">Save</button>
+      </div>
+      <div class="note bad" id="keyError" hidden></div>
+      <div class="note good" id="keyOk" hidden></div>
+    </section>
+
+    <section class="step card rise" style="animation-delay:.18s">
+      <h2><span class="n">2</span>Open a feed</h2>
+      <p>Four rules are on from the start: AI replies, slop, engagement bait and crypto. Click the Sweep icon to change them.</p>
+      <div class="sites">
+        <a href="https://x.com/home" target="_blank" rel="noopener">X</a>
+        <a href="https://www.reddit.com" target="_blank" rel="noopener">Reddit</a>
+        <a href="https://www.linkedin.com/feed/" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://news.ycombinator.com" target="_blank" rel="noopener">Hacker News</a>
+      </div>
+    </section>
+
+    <section class="step card rise" style="animation-delay:.24s">
+      <h2>What leaves your browser</h2>
+      <ul class="plain">
+        <li><b>The text of a post</b> that comes near your screen, and your rules. They go to the TypeSafe API, with your key.</li>
+        <li><b>Nothing more.</b> No names, no cookies, no page addresses, no analytics.</li>
+        <li><b>Your key and your rules stay in this browser.</b> Web pages cannot read them, and they do not sync.</li>
+        <li><b>A daily limit</b> stops the requests at 5,000 posts. You can change the limit.</li>
+      </ul>
+    </section>
+  </div>
+</div>
+<script src="defaults.js"></script>
+<script src="welcome.js"></script>
+</body>
+</html>
